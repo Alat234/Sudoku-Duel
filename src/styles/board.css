@@ -1,0 +1,391 @@
+.sudoku-board {
+    width: min(82vw, 760px);
+    height: min(82vw, 760px);
+    max-height: 78vh;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(15, 23, 42, 0.55);
+    border: 2px solid rgba(148, 163, 184, 0.45);
+    box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.28),
+            0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    backdrop-filter: blur(10px);
+}
+
+.sudoku-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, 0.88);
+    color: #0f172a;
+    font-size: clamp(1.15rem, 2.1vw, 2rem);
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+    border-right: 1px solid rgba(100, 116, 139, 0.5);
+    border-bottom: 1px solid rgba(100, 116, 139, 0.5);
+}
+
+.sudoku-cell:hover {
+    background: rgba(219, 234, 254, 0.92);
+}
+
+.sudoku-cell--border-right-heavy {
+    border-right: 3px solid rgba(51, 65, 85, 0.95);
+}
+
+.sudoku-cell--border-bottom-heavy {
+    border-bottom: 3px solid rgba(51, 65, 85, 0.95);
+}
+
+.sudoku-cell--border-left-heavy {
+    border-left: 3px solid rgba(51, 65, 85, 0.95);
+}
+
+.sudoku-cell--border-top-heavy {
+    border-top: 3px solid rgba(51, 65, 85, 0.95);
+}
+
+.sudoku-cell--given {
+    background: rgba(226, 232, 240, 0.96);
+    color: #3b82f6;
+    font-weight: 800;
+}
+
+.sudoku-cell--correct {
+    background: rgba(239, 246, 255, 0.96);
+    color: #1d4ed8;
+    font-weight: 800;
+    cursor: default;
+}
+
+.sudoku-cell--wrong {
+    background: rgba(255, 228, 230, 0.96);
+    color: #e11d48;
+}
+
+.sudoku-cell--related-line {
+    background: rgba(191, 219, 254, 0.72);
+}
+
+.sudoku-cell--related-block {
+    background: rgba(219, 234, 254, 0.82);
+}
+
+.sudoku-cell--same-value {
+    background: linear-gradient(180deg, rgba(96, 165, 250, 0.78), rgba(59, 130, 246, 0.72));
+    color: #ffffff;
+    box-shadow:
+            0 0 0 2px rgba(255, 255, 255, 0.55) inset,
+            0 0 0 1px rgba(59, 130, 246, 0.75),
+            0 0 18px rgba(59, 130, 246, 0.35);
+}
+
+.sudoku-cell--selected {
+    z-index: 2;
+    background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+    color: #ffffff;
+    transform: scale(1.03);
+    box-shadow:
+            0 0 0 2px rgba(255, 255, 255, 0.85) inset,
+            0 0 0 2px rgba(59, 130, 246, 0.95),
+            0 0 22px rgba(59, 130, 246, 0.45),
+            0 10px 24px rgba(37, 99, 235, 0.28);
+}
+
+.sudoku-cell__value {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.sudoku-cell__notes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    height: 100%;
+    padding: 6px;
+    font-size: clamp(0.6rem, 0.95vw, 0.92rem);
+    line-height: 1;
+    color: #64748b;
+}
+
+.sudoku-cell__note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    .sudoku-board {
+        width: min(92vw, 620px);
+        height: min(92vw, 620px);
+    }
+
+    .sudoku-cell {
+        font-size: clamp(1rem, 4.2vw, 1.5rem);
+    }
+
+    .sudoku-cell__notes {
+        font-size: clamp(0.52rem, 1.8vw, 0.72rem);
+        padding: 4px;
+    }
+}
+
+@media (max-width: 560px) {
+    .sudoku-board {
+        width: min(96vw, 520px);
+        height: min(96vw, 520px);
+        border-radius: 14px;
+    }
+
+    .sudoku-cell {
+        font-size: clamp(0.95rem, 4.8vw, 1.25rem);
+    }
+
+    .sudoku-cell__notes {
+        font-size: clamp(0.45rem, 2vw, 0.62rem);
+        padding: 2px;
+    }
+}
+.number-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+}
+
+.number-button {
+    min-width: 48px;
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid rgba(96, 165, 250, 0.32);
+    border-radius: 14px;
+    background:
+            linear-gradient(180deg, rgba(30, 64, 105, 0.98), rgba(22, 48, 83, 0.98));
+    color: #dbeafe;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow:
+            0 10px 22px rgba(15, 23, 42, 0.32),
+            0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease,
+            background-color 0.15s ease,
+            border-color 0.15s ease;
+}
+
+.number-button:hover {
+    transform: translateY(-2px);
+    border-color: rgba(147, 197, 253, 0.8);
+    box-shadow:
+            0 14px 28px rgba(15, 23, 42, 0.42),
+            0 0 18px rgba(59, 130, 246, 0.24);
+}
+
+.number-button:active {
+    transform: translateY(0);
+}
+
+.number-button--active {
+    background: linear-gradient(180deg, #60a5fa, #2563eb);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.75);
+    box-shadow:
+            0 0 0 2px rgba(219, 234, 254, 0.75),
+            0 0 24px rgba(59, 130, 246, 0.55);
+}
+
+.number-button--clear {
+    min-width: 88px;
+    color: #fee2e2;
+    border-color: rgba(248, 113, 113, 0.35);
+    background:
+            linear-gradient(180deg, rgba(127, 29, 29, 0.92), rgba(69, 10, 10, 0.94));
+}
+
+.number-button--clear:hover {
+    border-color: rgba(252, 165, 165, 0.85);
+    box-shadow:
+            0 14px 28px rgba(15, 23, 42, 0.42),
+            0 0 18px rgba(248, 113, 113, 0.22);
+}
+
+.selected-number-box {
+    width: 58px;
+    height: 58px;
+    margin-top: 10px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(96, 165, 250, 0.14);
+    color: #bfdbfe;
+    border: 1px solid rgba(147, 197, 253, 0.35);
+    font-size: 1.4rem;
+    font-weight: 900;
+}
+
+.game-hint {
+    margin-top: 12px;
+    color: #94a3b8;
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+@media (max-width: 640px) {
+    .number-panel {
+        gap: 7px;
+    }
+
+    .number-button {
+        min-width: 38px;
+        height: 40px;
+        border-radius: 11px;
+        padding: 0 10px;
+        font-size: 0.92rem;
+    }
+
+    .number-button--clear {
+        min-width: 72px;
+    }
+}
+/* Number pad aliases used by the current GameView. The Sudoku board styles above are not changed. */
+.number-pad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.number-button.active,
+.number-button--active {
+  background: linear-gradient(180deg, #60a5fa, #2563eb);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 0 0 2px rgba(219, 234, 254, 0.75),
+    0 0 24px rgba(59, 130, 246, 0.55);
+}
+
+.number-button.clear,
+.number-button--clear {
+  min-width: 88px;
+  color: #fee2e2;
+  border-color: rgba(248, 113, 113, 0.35);
+  background:
+    linear-gradient(180deg, rgba(127, 29, 29, 0.92), rgba(69, 10, 10, 0.94));
+}
+
+
+/* Patch v9: notes toggle is part of the number pad, not the top bar. */
+.number-pad .notes-pad-button {
+  min-width: 132px;
+  color: #dbeafe;
+  border-color: rgba(147, 197, 253, 0.38);
+  background:
+    linear-gradient(180deg, rgba(30, 64, 105, 0.98), rgba(22, 48, 83, 0.98));
+}
+
+.number-pad .notes-pad-button.active {
+  background: linear-gradient(180deg, #60a5fa, #2563eb);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 0 0 2px rgba(219, 234, 254, 0.75),
+    0 0 24px rgba(59, 130, 246, 0.55);
+}
+
+.number-pad .notes-pad-button.button-disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .number-pad {
+    width: min(96vw, 620px);
+    display: grid;
+    grid-template-columns: repeat(5, minmax(44px, 1fr));
+    gap: 10px;
+  }
+
+  .number-pad .number-button {
+    width: 100%;
+    min-width: 0;
+    padding: 0 10px;
+  }
+
+  .number-pad .clear,
+  .number-pad .notes-pad-button {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 560px) {
+  .sudoku-board {
+    width: min(96vw, 430px);
+    height: min(96vw, 430px);
+    max-height: none;
+  }
+
+  .number-pad {
+    width: min(96vw, 430px);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .number-pad .number-button {
+    height: 44px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+  }
+
+  .number-pad .clear,
+  .number-pad .notes-pad-button {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 380px) {
+  .sudoku-board {
+    width: min(96vw, 360px);
+    height: min(96vw, 360px);
+  }
+
+  .number-pad {
+    width: min(96vw, 360px);
+    gap: 6px;
+  }
+
+  .number-pad .number-button {
+    height: 38px;
+    border-radius: 10px;
+    font-size: 0.84rem;
+  }
+}
